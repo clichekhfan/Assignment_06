@@ -25,6 +25,7 @@ class DataProcessor:
     @staticmethod
     def add_2(userinputs):
         """proccesses user inputs into dictionary entries and puts dictionary in table
+                    Appends dictionary of user inputs to LstTbl as global.
 
         unpacks tuple of user inputs
         sorts indiviual user inputs into dictionary entries
@@ -35,25 +36,24 @@ class DataProcessor:
 
         Returns:
             None.
-            Appends dictionary of user inputs to LstTbl as global.
         """
         intID = int(userinputs[0])
         strTitle = userinputs[1]
-        stArtist = userinputs[2]
-        dicRow = {'ID': intID, 'Title': strTitle, 'Artist': stArtist}
+        strArtist = userinputs[2]
+        dicRow = {'ID': intID, 'Title': strTitle, 'Artist': strArtist}
         lstTbl.append(dicRow)
-        IO.show_inventory(lstTbl)
+
         
     @staticmethod
     def delete_entry(table):
         """Deletes an entry from memory.
+                    Modifies table to remove selected entry.
 
         Args:
             table (list of dict): 2D data structure (list of dicts) that holds the data during runtime
 
         Returns:
             None.
-            Modifies table to remove selected entry.
         """
         intRowNr = -1
         blnCDRemoved = False
@@ -67,7 +67,7 @@ class DataProcessor:
             print('The CD was removed')
         else:
             print('Could not find this CD!')
-        IO.show_inventory(lstTbl)
+
 
 class FileProcessor:
     """Processing the data to and from text file"""
@@ -175,18 +175,19 @@ class IO:
     @staticmethod
     def add_1():
         """takes initial user input
+        returns the user's inputs as a tuple
 
         Args:
             None.
 
         Returns:
-            (strID,strTitle,stArtist) as tplUserInputs
+            (strID,strTitle,strArtist)
 
         """
         strID = input('Enter ID: ').strip()
         strTitle = input('What is the CD\'s title? ').strip()
-        stArtist = input('What is the Artist\'s name? ').strip()
-        return strID,strTitle,stArtist
+        strArtist = input('What is the Artist\'s name? ').strip()
+        return strID,strTitle,strArtist
 
 # 1. When program starts, read in the currently saved Inventory
 FileProcessor.read_file(strFileName, lstTbl)
@@ -196,7 +197,6 @@ while True:
     # 2.1 Display Menu to user and get choice
     IO.print_menu()
     strChoice = IO.menu_choice()
-
     # 3. Process menu selection
     # 3.1 process exit first
     if strChoice == 'x':
@@ -204,7 +204,7 @@ while True:
     # 3.2 process load inventory
     if strChoice == 'l':
         print('WARNING: If you continue, all unsaved data will be lost and the Inventory re-loaded from file.')
-        strYesNo = input('type \'yes\' to continue and reload from file. otherwise reload will be canceled')
+        strYesNo = input('type \'yes\' to continue and reload from file. otherwise reload will be canceled: ')
         if strYesNo.lower() == 'yes':
             print('reloading...')
             FileProcessor.read_file(strFileName, lstTbl)
@@ -219,6 +219,7 @@ while True:
         tplUserInputs = IO.add_1()
         # 3.3.2 Add item to the table
         DataProcessor.add_2(tplUserInputs)
+        IO.show_inventory(lstTbl)
         continue  # start loop back at top.
     # 3.4 process display current inventory
     elif strChoice == 'i':
@@ -233,6 +234,7 @@ while True:
         intIDDel = int(input('Which ID would you like to delete? ').strip())
         # 3.5.2 search thru table and delete CD
         DataProcessor.delete_entry(lstTbl)
+        IO.show_inventory(lstTbl)
         continue  # start loop back at top.
     # 3.6 process save inventory to file
     elif strChoice == 's':
